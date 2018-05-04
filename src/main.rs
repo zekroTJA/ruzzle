@@ -8,7 +8,7 @@ use std::fs::File;
 use std::io::prelude::*;
 use std::path::Path;
 
-
+// highscore file name
 const HIGHSCORE_FILE: &str = "./highscore.dat";
 
 
@@ -23,7 +23,8 @@ fn clear() {
     cmd.status();
 }
 
-
+// printing field to console
+// replacing "9" with " "
 fn print_field(field: [[i8; 3]; 3]) {
     for i in &field {
         for j in i {
@@ -39,7 +40,10 @@ fn print_field(field: [[i8; 3]; 3]) {
     println!();
 }
 
-
+// depending if debug mode is enabled or not,
+// fill fild randomly with numbers or fill
+// fild that it can be finished in one move
+// for testing purposes
 fn fill_field(field: &mut [[i8; 3]; 3], d: bool) {
     if d {
         for i in 0..2 {
@@ -66,7 +70,7 @@ fn fill_field(field: &mut [[i8; 3]; 3], d: bool) {
     }
 }
 
-
+// check if fild is in finish pattern
 fn is_finished(field: [[i8; 3]; 3]) -> bool {
     for i in 0..3 {
         for j in 0..3 {
@@ -79,7 +83,8 @@ fn is_finished(field: [[i8; 3]; 3]) -> bool {
     return true;
 }
 
-
+// get input from console and parse
+// to i8, else repeat input request
 fn get_inpt() -> i8 {
     loop {
         let mut inpt: String = "".to_string();
@@ -93,7 +98,7 @@ fn get_inpt() -> i8 {
     }
 }
 
-
+// get position of number in field
 fn get_pos(field: [[i8; 3]; 3], v: i8) -> [i8; 2] {
     let mut y = 0;
     for i in &field {
@@ -109,7 +114,8 @@ fn get_pos(field: [[i8; 3]; 3], v: i8) -> [i8; 2] {
     return [0, 0];
 }
 
-
+// check arguments and enable
+// debug mode if debug arg is passed
 fn debug_mode() -> bool {
     let args: Vec<_> = env::args().collect();
     if args.len() > 1 {
@@ -121,7 +127,7 @@ fn debug_mode() -> bool {
     return false;
 }
 
-
+// get highscore from file if existent
 fn read_highscore() -> i32 {
     let path = Path::new(HIGHSCORE_FILE);
     if path.exists() {
@@ -136,7 +142,7 @@ fn read_highscore() -> i32 {
     return -1;
 }
 
-
+// write hishscore to file
 fn write_highscore(hs: i32) {
     let mut file = File::create(HIGHSCORE_FILE).unwrap();
     file.write_all(hs.to_string().as_bytes());
