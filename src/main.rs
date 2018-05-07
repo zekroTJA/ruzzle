@@ -44,8 +44,8 @@ fn print_field(field: [[i8; 3]; 3]) {
 // fill fild randomly with numbers or fill
 // fild that it can be finished in one move
 // for testing purposes
-fn fill_field(field: &mut [[i8; 3]; 3], d: bool) {
-    if d {
+fn fill_field(field: &mut [[i8; 3]; 3], d: &bool) {
+    if *d {
         for i in 0..2 {
             for j in 0..3 {
                 field[i][j] = (3 * i + j + 1) as i8;
@@ -80,7 +80,7 @@ fn is_finished(field: [[i8; 3]; 3]) -> bool {
             }
         }
     }
-    return true;
+    true
 }
 
 // get input from console and parse
@@ -99,19 +99,19 @@ fn get_inpt() -> i8 {
 }
 
 // get position of number in field
-fn get_pos(field: [[i8; 3]; 3], v: i8) -> [i8; 2] {
+fn get_pos(field: [[i8; 3]; 3], v: &i8) -> [i8; 2] {
     let mut y = 0;
     for i in &field {
         let mut x = 0;
         for j in i {
-            if *j == v {
+            if *j == *v {
                 return [x, y];
             }
             x += 1;
         }
         y += 1;
     }
-    return [0, 0];
+    [0, 0]
 }
 
 // check arguments and enable
@@ -120,11 +120,11 @@ fn debug_mode() -> bool {
     let args: Vec<_> = env::args().collect();
     if args.len() > 1 {
         if args[1] == "-r" {
-            write_highscore(-1);
+            write_highscore(&-1);
         }
         return args[1] == "-d";
     }
-    return false;
+    false
 }
 
 // get highscore from file if existent
@@ -139,11 +139,11 @@ fn read_highscore() -> i32 {
             Err(err) => println!("Failed reading highscore file:\n{}", err)
         }
     }
-    return -1;
+    -1
 }
 
 // write hishscore to file
-fn write_highscore(hs: i32) {
+fn write_highscore(hs: &i32) {
     let mut file = File::create(HIGHSCORE_FILE).unwrap();
     file.write_all(hs.to_string().as_bytes());
 }
@@ -157,7 +157,7 @@ fn main() {
     let mut moves: i32 = 0;
     let mut highscore: i32 = read_highscore();
 
-    fill_field(&mut field, DEBUG_MODE);
+    fill_field(&mut field, &DEBUG_MODE);
 
     while !is_finished(field) {
         clear();
@@ -169,8 +169,8 @@ fn main() {
             moves, if highscore > 0 { highscore.to_string() } else { "not set yet".to_string() }
         );
         print_field(field);
-        let chosen_pos = get_pos(field, get_inpt());
-        let zero_pos = get_pos(field, 9);
+        let chosen_pos = get_pos(field, &get_inpt());
+        let zero_pos = get_pos(field, &9);
         let diff = ((
             (zero_pos[0] - chosen_pos[0]) * (zero_pos[0] - chosen_pos[0]) +
             (zero_pos[1] - chosen_pos[1]) * (zero_pos[1] - chosen_pos[1])
@@ -187,7 +187,7 @@ fn main() {
     println!("Finished in {} move{}!", moves, 
         if moves > 1 { "s" } else { "" });
     if moves < highscore || highscore == -1 {
-        write_highscore(moves);
+        write_highscore(&moves);
         println!("Congrats! You set a new highscore!");
     }
 }
